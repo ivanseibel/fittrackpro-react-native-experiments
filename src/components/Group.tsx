@@ -2,13 +2,12 @@ import { IPressableProps, Pressable, Text } from 'native-base'
 
 type GroupProps = IPressableProps & {
   name: string
-  onPress?: () => void
+  active?: boolean
 }
 
-export function Group({ name, ...rest }: GroupProps) {
+export function Group({ name, active = false, ...rest }: GroupProps) {
   return (
     <Pressable
-      {...rest}
       mr={3}
       w={24}
       h={10}
@@ -17,9 +16,12 @@ export function Group({ name, ...rest }: GroupProps) {
       justifyContent={'center'}
       alignItems={'center'}
       overflow={'hidden'}
+      borderWidth={active ? 1 : 0}
+      borderColor={'green.700'}
+      {...rest}
     >
       <Text
-        color={'gray.200'}
+        color={active ? 'green.700' : 'gray.200'}
         textTransform={'uppercase'}
         fontSize={'xs'}
         fontWeight={'bold'}
