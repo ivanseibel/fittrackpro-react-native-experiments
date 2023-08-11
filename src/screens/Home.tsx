@@ -1,9 +1,10 @@
-import { Center, Heading } from 'native-base'
+import { HomeHeader } from '@components/HomeHeader'
+import { VStack } from 'native-base'
 
 export function Home() {
   return (
-    <Center flex={1}>
-      <Heading color={'white'}>Home</Heading>
-    </Center>
+    <VStack flex={1}>
+      <HomeHeader />
+    </VStack>
   )
 }
