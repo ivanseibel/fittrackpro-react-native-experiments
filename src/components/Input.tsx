@@ -10,6 +10,7 @@ export function Input(props: InputProps) {
       px={4}
       borderWidth={0}
       fontSize={'md'}
+      lineHeight={'md'}
       color={'white'}
       fontFamily={'body'}
       placeholderTextColor={'gray.300'}
