@@ -1,9 +1,10 @@
-import { Center, Heading } from 'native-base'
+import { ScreenHeader } from '@components/ScreenHeader'
+import { VStack } from 'native-base'
 
 export function History() {
   return (
-    <Center flex={1}>
-      <Heading color={'white'}>History</Heading>
-    </Center>
+    <VStack flex={1}>
+      <ScreenHeader title="Exercise History" />
+    </VStack>
   )
 }
