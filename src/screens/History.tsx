@@ -1,7 +1,6 @@
 import { HistoryCard } from '@components/HistoryCard'
 import { ScreenHeader } from '@components/ScreenHeader'
-import { VStack, SectionList, Heading } from 'native-base'
-// import { SectionList } from 'react-native'
+import { VStack, SectionList, Heading, Text } from 'native-base'
 
 type Exercise = {
   group: string
@@ -72,6 +71,25 @@ export function History() {
         keyExtractor={(item, index) => item.name + index}
         renderItem={({ item }) => <HistoryCard {...item} />}
         px={8}
+        ListEmptyComponent={() => (
+          <Text
+            color={'gray.100'}
+            fontSize={'md'}
+            lineHeight={'md'}
+            w="80%"
+            textAlign={'center'}
+          >
+            Your fitness journey awaits - let&apos;s start logging those
+            workouts!
+          </Text>
+        )}
+        contentContainerStyle={
+          exercises.length === 0 && {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        }
         renderSectionHeader={({ section: { title } }) => (
           <Heading
             color={'gray.200'}
