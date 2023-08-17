@@ -18,8 +18,8 @@ const exercises: ExerciseHistorySectionList[] = [
     title: '26.08.2021',
     data: [
       {
-        group: 'Back',
-        name: 'Front pulldown',
+        group: 'Back bla bla bla bla bla blaoidhjfaoifjd asdoifhjaosdfij',
+        name: 'Front pulldown aoiuhoasdifhj adofijaosdifjaos asodifjaosdifj aodifjaodifj',
         time: '07:30',
       },
       {
