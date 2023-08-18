@@ -1,4 +1,12 @@
-import { HStack, Heading, Icon, VStack, Text, Image } from 'native-base'
+import {
+  HStack,
+  Heading,
+  Icon,
+  VStack,
+  Text,
+  Image,
+  ScrollView,
+} from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons'
@@ -51,40 +59,46 @@ export function Exercise() {
         </HStack>
       </VStack>
 
-      <VStack flex={1} p={8} space={3}>
-        <Image
-          source={{
-            uri: 'https://williamcarvalhoamaral.files.wordpress.com/2020/01/dorsal-blog.jpg?w=640',
-          }}
-          alt="Exercise image"
-          w={364}
-          h={364}
-          rounded={'8px'}
-          mr={4}
-          resizeMode="cover"
-        />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        pb={4}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <VStack flex={1} p={8} space={3}>
+          <Image
+            source={{
+              uri: 'https://williamcarvalhoamaral.files.wordpress.com/2020/01/dorsal-blog.jpg?w=640',
+            }}
+            alt="Exercise image"
+            w={364}
+            h={364}
+            rounded={8}
+            mr={4}
+            resizeMode="cover"
+          />
 
-        <VStack pt={4} pb={2} px={2} space={6}>
-          <HStack justifyContent={'center'} space={16}>
-            <HStack space={2}>
-              <SeriesSvg width={24} height={24} />
-              <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
-                3 series
-              </Text>
+          <VStack pt={4} pb={4} px={2} space={6} bg={'gray.600'} rounded={8}>
+            <HStack justifyContent={'center'} space={16}>
+              <HStack space={2}>
+                <SeriesSvg width={24} height={24} />
+                <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
+                  3 series
+                </Text>
+              </HStack>
+              <HStack space={2}>
+                <RepetitionsSvg width={24} height={24} />
+                <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
+                  12 reps
+                </Text>
+              </HStack>
             </HStack>
-            <HStack space={2}>
-              <RepetitionsSvg width={24} height={24} />
-              <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
-                12 reps
-              </Text>
-            </HStack>
-          </HStack>
 
-          <Button w={'full'} h={14}>
-            Mark as completed
-          </Button>
+            <Button w={'full'} h={14}>
+              Mark as completed
+            </Button>
+          </VStack>
         </VStack>
-      </VStack>
+      </ScrollView>
     </VStack>
   )
 }
