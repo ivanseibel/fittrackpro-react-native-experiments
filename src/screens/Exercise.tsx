@@ -1,12 +1,15 @@
-import { HStack, Heading, Icon, VStack, Text, Image, Center } from 'native-base'
+import { HStack, Heading, Icon, VStack, Text, Image } from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
 
-import BodySvg from '@assets/body.svg'
 import { Button } from '@components/Button'
+
+import BodySvg from '@assets/body.svg'
+import SeriesSvg from '@assets/series.svg'
+import RepetitionsSvg from '@assets/repetitions.svg'
 
 export function Exercise() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -62,26 +65,24 @@ export function Exercise() {
         />
 
         <VStack pt={4} pb={2} px={2} space={6}>
-          <HStack justifyContent={'center'} space={20}>
-            <Center flexDir={'row'}>
-              <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
-                Icon
-              </Text>
+          <HStack justifyContent={'center'} space={16}>
+            <HStack space={2}>
+              <SeriesSvg width={24} height={24} />
               <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
                 3 series
               </Text>
-            </Center>
-            <Center flexDir={'row'}>
-              <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
-                Icon
-              </Text>
+            </HStack>
+            <HStack space={2}>
+              <RepetitionsSvg width={24} height={24} />
               <Text color={'gray.200'} fontSize={'md'} lineHeight={'md'}>
                 12 reps
               </Text>
-            </Center>
+            </HStack>
           </HStack>
 
-          <Button>Mark as completed</Button>
+          <Button w={'full'} h={14}>
+            Mark as completed
+          </Button>
         </VStack>
       </VStack>
     </VStack>
