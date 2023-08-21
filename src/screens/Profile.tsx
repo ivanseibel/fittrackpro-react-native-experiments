@@ -6,17 +6,26 @@ import { UserPhoto } from '@components/UserPhoto'
 import { Center, Heading, ScrollView, Text, VStack } from 'native-base'
 import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { useState } from 'react'
+
+import userPhotoDefault from '@assets/userPhotoDefault.png'
 
 const PHOTO_SIZE = 33
 
 export function Profile() {
+  const [userPhoto, setUserPhoto] = useState<string | null>(null)
+
   async function handleUserPhotoChange() {
-    await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     })
+
+    if (!result.canceled) {
+      setUserPhoto(result.assets[0].uri)
+    }
   }
 
   return (
@@ -33,9 +42,7 @@ export function Profile() {
             <UserPhoto
               size={PHOTO_SIZE}
               alt="Ivan Seibel"
-              source={{
-                uri: 'https://ghk.h-cdn.co/assets/16/18/4000x2250/hd-aspect-1462454304-gettyimages-485952777.jpg',
-              }}
+              source={!userPhoto ? userPhotoDefault : { uri: userPhoto }}
             />
             <TouchableOpacity
               onPress={handleUserPhotoChange}
