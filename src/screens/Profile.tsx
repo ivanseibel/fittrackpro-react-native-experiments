@@ -4,17 +4,24 @@ import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { Center, Heading, ScrollView, Text, VStack } from 'native-base'
-import { TouchableOpacity } from 'react-native'
+import { Alert, TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
 import { useState } from 'react'
 
 const PHOTO_SIZE = 33
+
+type PhotoFileInfoProps = FileSystem.FileInfo & {
+  size: number
+}
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null)
 
   async function handleUserPhotoChange() {
     try {
+      // File size is limited to 5MB
+
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -22,9 +29,22 @@ export function Profile() {
         quality: 1,
       })
 
-      if (!result.canceled) {
-        setUserPhoto(result.assets[0].uri)
+      if (result.canceled) {
+        return
       }
+
+      const fileInfo = (await FileSystem.getInfoAsync(result.assets[0].uri, {
+        size: true,
+      })) as PhotoFileInfoProps
+
+      if (fileInfo.size > 5 * 1024 * 1024) {
+        Alert.alert(
+          'The selected image is too large. Please select a smaller one.',
+        )
+        return
+      }
+
+      setUserPhoto(result.assets[0].uri)
     } catch (err) {
       alert('Failed to load image')
     }
