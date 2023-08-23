@@ -13,7 +13,7 @@ export function Routes() {
     },
   }
 
-  const isAuthenticated = true
+  const isAuthenticated = false
 
   return (
     <Box flex={1} bg="gray.700">
