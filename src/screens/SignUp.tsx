@@ -22,7 +22,10 @@ const signUpSchema = yup.object().shape({
     .string()
     .email('Please enter a valid email')
     .required('Email is required'),
-  password: yup.string().required('Password is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(6, 'Password is too short'),
   confirmPassword: yup
     .string()
     .required('Confirm Password is required')
