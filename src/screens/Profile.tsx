@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { TOAST_DEFAULT } from '../utils/constants'
 
 const PHOTO_SIZE = 33
 
@@ -82,10 +83,10 @@ export function Profile() {
 
       if (fileInfo.size > 5 * 1024 * 1024) {
         toast.show({
-          title:
-            'The selected image is too large. Please select a smaller one.',
-          placement: 'top',
+          title: 'Error',
+          description: 'The image size must be less than 5MB.',
           bgColor: 'red.500',
+          ...TOAST_DEFAULT,
         })
         return
       }
@@ -93,9 +94,10 @@ export function Profile() {
       setUserPhoto(result.assets[0].uri)
     } catch (err) {
       toast.show({
-        title: 'An error occurred while trying to change the photo.',
-        placement: 'top',
+        title: 'Error',
+        description: 'An error occurred while changing the photo.',
         bgColor: 'red.500',
+        ...TOAST_DEFAULT,
       })
     }
   }
