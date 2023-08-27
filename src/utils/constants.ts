@@ -11,3 +11,6 @@ export const TOAST_DEFAULT: IToastProps = {
     fontSize: 'lg',
   },
 }
+
+export const GENERAL_ERROR_MESSAGE =
+  'An error occurred while processing your request. \nPlease try again later.'
