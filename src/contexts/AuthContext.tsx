@@ -89,6 +89,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (response.status !== 201) {
         throw new AppError(response.data.message)
       }
+
+      await handleSignIn({
+        email: data.email,
+        password: data.password,
+      })
     } finally {
       setIsLoading(false)
     }
