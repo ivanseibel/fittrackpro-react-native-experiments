@@ -66,7 +66,7 @@ export function SignUp() {
     try {
       await signUp(data)
       toast.show({
-        description: `Welcome, ${data.name}`,
+        description: `Welcome, ${data.name}! You can now sign in.`,
         bgColor: 'green.500',
         ...TOAST_DEFAULT,
       })
