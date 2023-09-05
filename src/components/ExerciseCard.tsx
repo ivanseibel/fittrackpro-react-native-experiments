@@ -1,6 +1,7 @@
 import { HStack, Image, VStack, Text, Heading, Icon } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { Entypo } from '@expo/vector-icons'
+import { api } from 'src/service/api'
 
 type ExerciseCardProps = TouchableOpacityProps & {
   name: string
@@ -26,7 +27,7 @@ export function ExerciseCard({
       >
         <Image
           source={{
-            uri: image,
+            uri: `${api.defaults.baseURL}/exercise/thumb/${image}`,
           }}
           alt="Exercise image"
           w={16}
