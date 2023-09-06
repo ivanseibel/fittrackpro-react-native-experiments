@@ -1,5 +1,6 @@
 import { SignInDTO } from '@dtos/SignInDTO'
 import { UserDTO } from '@dtos/UserDTO'
+import { tokenStorageGet, tokenStorageSave } from '@storage/tokenStorage'
 import {
   userStorageGet,
   userStorageRemove,
@@ -23,8 +24,6 @@ type SignUpProps = {
 type AuthContextDataType = {
   user: UserDTO
   isLoading: boolean
-  token: string
-  refreshToken: string
   signIn: (props: SignInProps) => void
   signOut: () => void
   signUp: (props: SignUpProps) => void
@@ -41,8 +40,17 @@ export const AuthContext = createContext<AuthContextDataType>(
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
-  const [token, setToken] = useState<string>('')
-  const [refreshToken, setRefreshToken] = useState('')
+
+  function updateUserStateAndSetToken(data: SignInDTO) {
+    setUser(data.user)
+
+    api.defaults.headers.common.Authorization = `Bearer ${data.token}`
+  }
+
+  async function updateUserAndTokenStorage(data: SignInDTO) {
+    await userStorageSave(data.user)
+    await tokenStorageSave(data.token)
+  }
 
   async function handleSignIn({ email, password }: SignInProps) {
     if (email === '' || password === '') {
@@ -63,11 +71,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         throw new AppError('Invalid credentials')
       }
 
-      setUser(data.user)
-      setToken(data.token)
-      setRefreshToken(data.refresh_token)
+      await updateUserAndTokenStorage(data)
 
-      await userStorageSave(data.user)
+      updateUserStateAndSetToken(data)
     } finally {
       setIsLoading(false)
     }
@@ -76,8 +82,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function handleSignOut() {
     await userStorageRemove()
     setUser({} as UserDTO)
-    setToken('')
-    setRefreshToken('')
   }
 
   async function handleSignUp(data: SignUpProps) {
@@ -103,10 +107,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     async function loadStorageData() {
       setIsLoading(true)
 
-      const user = await userStorageGet()
+      const userFromStorage = await userStorageGet()
+      const tokenFromStorage = await tokenStorageGet()
 
-      if (user) {
-        setUser(user)
+      if (userFromStorage && tokenFromStorage) {
+        updateUserStateAndSetToken({
+          user: userFromStorage,
+          token: tokenFromStorage,
+          refresh_token: '',
+        })
       }
 
       setIsLoading(false)
@@ -120,8 +129,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       value={{
         user,
         isLoading,
-        token,
-        refreshToken,
         signIn: handleSignIn,
         signOut: handleSignOut,
         signUp: handleSignUp,
