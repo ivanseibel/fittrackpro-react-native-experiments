@@ -21,8 +21,8 @@ export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const toast = useToast()
 
-  function handleOpenExercise() {
-    navigation.navigate('exercise')
+  function handleOpenExercise(exerciseId: string) {
+    navigation.navigate('exercise', { exerciseId })
   }
 
   useEffect(() => {
@@ -61,7 +61,6 @@ export function Home() {
           const result = await api.get(`/exercises/bygroup/${selectedGroup}`)
 
           if (result.status === 200) {
-            console.log('result.data', result.data)
             setExercises(result.data as ExerciseDTO[])
           }
         } catch (error) {
@@ -133,7 +132,7 @@ export function Home() {
                 description={`${item.series} series - ${item.repetitions} reps`}
                 name={item.name}
                 image={item.thumb}
-                onPress={handleOpenExercise}
+                onPress={() => handleOpenExercise(item.id)}
               />
             )}
           />
