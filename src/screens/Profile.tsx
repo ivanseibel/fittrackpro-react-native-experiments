@@ -19,6 +19,9 @@ import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TOAST_DEFAULT } from '../utils/constants'
+import { useAuth } from '@hooks/useAuth'
+import { AppError } from '@utils/AppError'
+import { api } from 'src/service/api'
 
 const PHOTO_SIZE = 33
 
@@ -28,41 +31,84 @@ type PhotoFileInfoProps = FileSystem.FileInfo & {
 
 type Inputs = {
   name: string
-  password: string
-  confirmPassword: string
+  email?: string
+  oldPassword?: string
+  password?: string
+  confirmPassword?: string
 }
 
-const signUpSchema = yup.object().shape({
+const signUpSchema = yup.object({
   name: yup.string().required('Name is required'),
   password: yup
     .string()
-    .required('Password is required')
-    .min(6, 'Password is too short'),
+    .test(
+      'minLength',
+      'Password must be at least 6 characters long',
+      (val) => !val || val.length >= 6,
+    ),
   confirmPassword: yup
     .string()
-    .required('Confirm Password is required')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
+    .test('passwords-match', 'Passwords do not match', function (val) {
+      return !this.parent.password || !val || val === this.parent.password
+    }),
 })
 
 export function Profile() {
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [userPhoto, setUserPhoto] = useState<string | null>(null)
+
+  const toast = useToast()
+  const { user } = useAuth()
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      name: '',
+      name: user.name,
+      email: user.email,
+      oldPassword: '',
       password: '',
       confirmPassword: '',
     },
     resolver: yupResolver(signUpSchema),
   })
 
-  const onSubmit = (data: Inputs) => console.log('hey', data)
+  async function onSubmit(data: Inputs) {
+    setIsUpdating(true)
+    try {
+      const response = await api.put('/users', {
+        name: data.name,
+        password: data.password,
+        old_password: data.oldPassword,
+      })
 
-  const [userPhoto, setUserPhoto] = useState<string | null>(null)
+      if (response.status !== 200) {
+        throw new AppError(response.data.message)
+      }
 
-  const toast = useToast()
+      toast.show({
+        description: 'Profile updated successfully.',
+        bgColor: 'green.500',
+        ...TOAST_DEFAULT,
+      })
+
+      // control._reset()
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      toast.show({
+        description: isAppError
+          ? error.message
+          : 'An error occurred while updating the profile. Please try again later.',
+        bgColor: 'red.500',
+        ...TOAST_DEFAULT,
+      })
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   async function handleUserPhotoChange() {
     try {
@@ -146,11 +192,18 @@ export function Profile() {
                   />
                 )}
               />
-              <Input
-                placeholder="E-mail"
-                bg={'gray.600'}
-                isDisabled
-                isReadOnly
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { value } }) => (
+                  <Input
+                    placeholder="E-mail"
+                    bg={'gray.600'}
+                    isDisabled
+                    isReadOnly
+                    value={value}
+                  />
+                )}
               />
             </VStack>
             <VStack space={4} w={'full'} flex={1} justifyContent={'flex-end'}>
@@ -162,6 +215,21 @@ export function Profile() {
               >
                 Change password
               </Heading>
+              <Controller
+                control={control}
+                name="oldPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    placeholder="Old password"
+                    bg={'gray.600'}
+                    secureTextEntry
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    errorMessage={errors.oldPassword?.message}
+                  />
+                )}
+              />
               <Controller
                 control={control}
                 name="password"
@@ -188,6 +256,8 @@ export function Profile() {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     value={value}
+                    returnKeyType="send"
+                    onSubmitEditing={handleSubmit(onSubmit)}
                     errorMessage={errors.confirmPassword?.message}
                   />
                 )}
@@ -199,6 +269,7 @@ export function Profile() {
                 h={14}
                 variant={'solid'}
                 onPress={handleSubmit(onSubmit)}
+                isLoading={isUpdating}
               >
                 Save
               </Button>
