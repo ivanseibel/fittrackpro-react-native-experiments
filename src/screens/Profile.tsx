@@ -58,7 +58,7 @@ export function Profile() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null)
 
   const toast = useToast()
-  const { user } = useAuth()
+  const { user, updateUserProfile } = useAuth()
 
   const {
     control,
@@ -76,8 +76,9 @@ export function Profile() {
   })
 
   async function onSubmit(data: Inputs) {
-    setIsUpdating(true)
     try {
+      setIsUpdating(true)
+
       const response = await api.put('/users', {
         name: data.name,
         password: data.password,
@@ -94,7 +95,10 @@ export function Profile() {
         ...TOAST_DEFAULT,
       })
 
-      // control._reset()
+      await updateUserProfile({
+        ...user,
+        name: data.name,
+      })
     } catch (error) {
       const isAppError = error instanceof AppError
 
