@@ -55,10 +55,9 @@ const signUpSchema = yup.object({
 
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState<string | null>(null)
 
   const toast = useToast()
-  const { user, updateUserProfile } = useAuth()
+  const { user, updateUserProfile, avatarUri } = useAuth()
 
   const {
     control,
@@ -140,10 +139,52 @@ export function Profile() {
         return
       }
 
-      setUserPhoto(result.assets[0].uri)
-    } catch (err) {
+      const fileExtension = fileInfo.uri.split('.').pop()
+      const uri = result.assets[0].uri
+      const type = `${result.assets[0].type}/${fileExtension}`
+      const name = `${user.id}_${user.name}.${fileExtension}`
+        .toLowerCase()
+        .replace(/\s/g, '_')
+
+      const userPhotoUploadForm = new FormData()
+
+      userPhotoUploadForm.append('avatar', {
+        uri,
+        type,
+        name,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
+
+      const response = await api.patch('/users/avatar', userPhotoUploadForm, {
+        headers: {
+          accept: 'application/json',
+          'content-type': 'multipart/form-data',
+        },
+      })
+
+      if (response.status !== 200) {
+        throw new AppError(response.data.message)
+      }
+
+      const userPhoto = response.data.avatar
+
+      await updateUserProfile({
+        ...user,
+        avatar: userPhoto,
+      })
+
       toast.show({
-        description: 'An error occurred while changing the photo.',
+        description: 'Photo updated successfully.',
+        bgColor: 'green.700',
+        ...TOAST_DEFAULT,
+      })
+    } catch (error) {
+      console.log(error)
+      const isAppError = error instanceof AppError
+      toast.show({
+        description: isAppError
+          ? error.message
+          : 'An error occurred while updating the photo. Please try again later.',
         bgColor: 'red.500',
         ...TOAST_DEFAULT,
       })
@@ -164,7 +205,7 @@ export function Profile() {
             <UserPhoto
               size={PHOTO_SIZE}
               alt="Ivan Seibel"
-              source={!userPhoto ? undefined : { uri: userPhoto }}
+              source={!user.avatar ? undefined : { uri: avatarUri }}
             />
             <TouchableOpacity
               onPress={handleUserPhotoChange}
