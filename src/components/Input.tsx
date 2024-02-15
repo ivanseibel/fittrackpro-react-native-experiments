@@ -13,6 +13,11 @@ export function Input(props: InputProps) {
       color={'white'}
       fontFamily={'body'}
       placeholderTextColor={'gray.300'}
+      _focus={{
+        bg: 'gray.700',
+        borderWidth: 1,
+        borderColor: 'green.500',
+      }}
       {...props}
     />
   )
