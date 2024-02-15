@@ -8,29 +8,28 @@ import { DismissKeyboardView } from '@components/DismissKeyboardView'
 export default function SignIn() {
   return (
     <DismissKeyboardView>
-      <VStack flex={1} bg={'gray.700'}>
+      <VStack flex={1} bg={'gray.700'} px={'10'}>
         <Image
           source={BackgroundImg}
           alt=""
           resizeMode="contain"
           position="absolute"
         />
-        <Center flex={1} justifyContent={'flex-start'} paddingX={'10'}>
-          <Center my={24}>
-            <LogoSvg />
-            <Text fontSize="sm" color="gray.100">
-              Strengthen your mind and body
-            </Text>
-          </Center>
-          <Center>
-            <Heading color="gray.100" fontSize="xl" mb={6} fontFamily="heading">
-              Access your account
-            </Heading>
-          </Center>
-          <Center>
-            <Input placeholder="Email" inputMode="email" />
-          </Center>
+        <Center my={24}>
+          <LogoSvg />
+          <Text fontSize="sm" color="gray.100">
+            Strengthen your mind and body
+          </Text>
         </Center>
+        <Center>
+          <Heading color="gray.100" fontSize="xl" mb={6} fontFamily="heading">
+            Access your account
+          </Heading>
+        </Center>
+        <VStack space={4}>
+          <Input placeholder="Email" inputMode="email" />
+          <Input placeholder="Password" secureTextEntry />
+        </VStack>
       </VStack>
     </DismissKeyboardView>
   )
