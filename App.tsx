@@ -1,4 +1,5 @@
-import { Text, View, StatusBar } from 'react-native'
+import { Text, StatusBar } from 'react-native'
+import { NativeBaseProvider } from 'native-base'
 import {
   useFonts,
   Roboto_400Regular as Roboto400Regular,
@@ -16,14 +17,7 @@ export default function App() {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#202024',
-      }}
-    >
+    <NativeBaseProvider>
       <StatusBar
         barStyle="light-content"
         backgroundColor={'transparent'}
@@ -32,6 +26,6 @@ export default function App() {
       <Text style={{ fontFamily: 'Roboto_700Bold', fontSize: 32 }}>
         Hello FitTrackPro
       </Text>
-    </View>
+    </NativeBaseProvider>
   )
 }
