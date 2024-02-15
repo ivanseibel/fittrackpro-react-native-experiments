@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { Text, View, StatusBar } from 'react-native'
 import {
   useFonts,
   Roboto_400Regular as Roboto400Regular,
@@ -16,7 +16,19 @@ export default function App() {
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#202024',
+      }}
+    >
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={'transparent'}
+        translucent={true}
+      />
       <Text style={{ fontFamily: 'Roboto_700Bold', fontSize: 32 }}>
         Hello FitTrackPro
       </Text>
