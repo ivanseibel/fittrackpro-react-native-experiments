@@ -7,7 +7,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import { Loading } from '@components/Loading'
 import { theme } from 'src/theme'
-import SignUp from '@screens/SignUp'
+import { SignUp } from '@screens/SignUp'
 
 export default function App() {
   const [fontsLoaded] = useFonts({

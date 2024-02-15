@@ -6,7 +6,7 @@ import { Input } from '@components/Input'
 import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
 
-export default function SignUp() {
+export function SignUp() {
   return (
     <DismissKeyboardView>
       <ScrollView
