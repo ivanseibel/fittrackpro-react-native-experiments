@@ -20,7 +20,7 @@ export default function App() {
         backgroundColor={'transparent'}
         translucent={true}
       />
-      {fontsLoaded ? (
+      {!fontsLoaded ? (
         <Loading />
       ) : (
         <Text style={{ fontFamily: 'Roboto_700Bold', fontSize: 32 }}>
