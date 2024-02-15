@@ -1,6 +1,10 @@
 import { IButtonProps, Button as NativeBaseButton } from 'native-base'
 
-export function Button({ variant, children, ...rest }: IButtonProps) {
+type ButtonProps = IButtonProps & {
+  variant?: 'solid' | 'outline'
+}
+
+export function Button({ variant = 'solid', children, ...rest }: ButtonProps) {
   return (
     <NativeBaseButton
       rounded={'6px'}
