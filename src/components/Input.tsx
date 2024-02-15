@@ -13,6 +13,7 @@ export function Input(props: InputProps) {
       color={'white'}
       fontFamily={'body'}
       placeholderTextColor={'gray.300'}
+      rounded={'6px'}
       _focus={{
         bg: 'gray.700',
         borderWidth: 1,
