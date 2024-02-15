@@ -40,7 +40,11 @@ export default function SignIn() {
             </Heading>
           </Center>
           <VStack space={4}>
-            <Input placeholder="Email" inputMode="email" />
+            <Input
+              placeholder="Email"
+              inputMode="email"
+              autoCapitalize="none"
+            />
             <Input placeholder="Password" secureTextEntry />
           </VStack>
           <Center mt={8}>
