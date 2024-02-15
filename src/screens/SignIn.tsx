@@ -4,6 +4,7 @@ import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { DismissKeyboardView } from '@components/DismissKeyboardView'
+import { Button } from '@components/Button'
 
 export default function SignIn() {
   return (
@@ -30,6 +31,9 @@ export default function SignIn() {
           <Input placeholder="Email" inputMode="email" />
           <Input placeholder="Password" secureTextEntry />
         </VStack>
+        <Center mt={8}>
+          <Button w={'full'} h={14} title="Sign in" bg={'green.700'} />
+        </Center>
       </VStack>
     </DismissKeyboardView>
   )
