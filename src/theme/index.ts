@@ -31,6 +31,11 @@ export const theme = extendTheme({
     lg: 18,
     xl: 20,
   },
+  lineHeights: {
+    sm: '22.4px',
+    md: '25.6px',
+    xl: '32px',
+  },
   sizes: {
     14: 56,
     33: 148,
