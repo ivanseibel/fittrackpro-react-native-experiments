@@ -5,8 +5,16 @@ import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
+import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { useNavigation } from '@react-navigation/native'
 
 export function SignIn() {
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  function handleNavigateToSignUp() {
+    navigation.navigate('signUp')
+  }
+
   return (
     <DismissKeyboardView>
       <ScrollView
@@ -62,7 +70,12 @@ export function SignIn() {
             <Heading color="gray.100" fontSize="md" mt={4} lineHeight={'md'}>
               Don&apos;t have an account?
             </Heading>
-            <Button w={'full'} h={14} variant={'outline'}>
+            <Button
+              w={'full'}
+              h={14}
+              variant={'outline'}
+              onPress={handleNavigateToSignUp}
+            >
               Sign up
             </Button>
           </VStack>

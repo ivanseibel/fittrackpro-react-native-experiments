@@ -5,8 +5,15 @@ import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
+import { useNavigation } from '@react-navigation/native'
 
 export function SignUp() {
+  const navigation = useNavigation()
+
+  function handleNavigateToSignIn() {
+    navigation.goBack()
+  }
+
   return (
     <DismissKeyboardView>
       <ScrollView
@@ -61,7 +68,12 @@ export function SignUp() {
             alignItems={'center'}
             space={4}
           >
-            <Button w={'full'} h={14} variant={'outline'}>
+            <Button
+              w={'full'}
+              h={14}
+              variant={'outline'}
+              onPress={handleNavigateToSignIn}
+            >
               Back to Sign in
             </Button>
           </VStack>
