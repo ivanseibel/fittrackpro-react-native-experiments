@@ -30,9 +30,8 @@ export function Home() {
         data={groups}
         keyExtractor={(group) => group}
         horizontal
-        backgroundColor={'green.100'}
         my={10}
-        // maxH={10}
+        maxH={10}
         _contentContainerStyle={{ px: 8 }}
         renderItem={({ item }) => (
           <Group
