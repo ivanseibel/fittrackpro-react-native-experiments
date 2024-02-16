@@ -24,6 +24,7 @@ export function Group({ name, active = false, ...rest }: GroupProps) {
         color={active ? 'green.700' : 'gray.200'}
         textTransform={'uppercase'}
         fontSize={'xs'}
+        lineHeight={'xs'}
         fontWeight={'bold'}
       >
         {name}
