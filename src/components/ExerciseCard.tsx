@@ -2,9 +2,18 @@ import { HStack, Image, VStack, Text, Heading, Icon } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { Entypo } from '@expo/vector-icons'
 
-type ExerciseCardProps = TouchableOpacityProps
+type ExerciseCardProps = TouchableOpacityProps & {
+  name: string
+  image: string
+  description: string
+}
 
-export function ExerciseCard({ ...rest }: ExerciseCardProps) {
+export function ExerciseCard({
+  name,
+  image,
+  description,
+  ...rest
+}: ExerciseCardProps) {
   return (
     <TouchableOpacity {...rest} style={{ marginBottom: 12 }}>
       <HStack
@@ -17,7 +26,7 @@ export function ExerciseCard({ ...rest }: ExerciseCardProps) {
       >
         <Image
           source={{
-            uri: 'https://williamcarvalhoamaral.files.wordpress.com/2020/01/dorsal-blog.jpg?w=640',
+            uri: image,
           }}
           alt="Exercise image"
           w={16}
@@ -33,7 +42,7 @@ export function ExerciseCard({ ...rest }: ExerciseCardProps) {
             fontFamily={'heading'}
             lineHeight={'md'}
           >
-            Front pulldown
+            {name}
           </Heading>
           <Text
             fontSize={'sm'}
@@ -42,10 +51,7 @@ export function ExerciseCard({ ...rest }: ExerciseCardProps) {
             mt={1}
             numberOfLines={2}
           >
-            3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing
-            elit. Excepturi praesentium omnis error vero porro inventore,
-            tempore corrupti dolores odit? Provident eos adipisci, doloribus
-            minima fugit esse voluptatum. Quisquam, quod dolorum?
+            {description}
           </Text>
         </VStack>
         <Icon
