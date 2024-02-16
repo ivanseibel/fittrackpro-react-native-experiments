@@ -5,7 +5,7 @@ type InputProps = React.ComponentProps<typeof NativeBaseInput>
 export function Input(props: InputProps) {
   return (
     <NativeBaseInput
-      bg="gray.700"
+      bg="gray.650"
       h={14}
       px={4}
       borderWidth={0}
@@ -15,7 +15,7 @@ export function Input(props: InputProps) {
       placeholderTextColor={'gray.300'}
       rounded={'6px'}
       _focus={{
-        bg: 'gray.700',
+        bg: 'gray.650',
         borderWidth: 1,
         borderColor: 'green.500',
       }}
