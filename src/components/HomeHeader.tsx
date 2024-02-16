@@ -13,10 +13,15 @@ export function HomeHeader() {
         mr={4}
       />
       <VStack flex={1}>
-        <Text color={'gray.100'} fontSize={'md'}>
+        <Text color={'gray.100'} fontSize={'md'} lineHeight={'md'}>
           Hello,
         </Text>
-        <Heading color={'gray.100'} fontSize={'md'} fontFamily={'heading'}>
+        <Heading
+          color={'gray.100'}
+          fontSize={'md'}
+          lineHeight={'md'}
+          fontFamily={'heading'}
+        >
           Ivan Seibel
         </Heading>
       </VStack>
