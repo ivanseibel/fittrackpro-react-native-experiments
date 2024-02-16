@@ -1,4 +1,5 @@
-import { Center, Heading } from 'native-base'
+import { ScreenHeader } from '@components/ScreenHeader'
+import { VStack } from 'native-base'
 
 export function Profile() {
   return (
