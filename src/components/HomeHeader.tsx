@@ -1,5 +1,7 @@
-import { HStack, Heading, Text, VStack } from 'native-base'
+import { HStack, Heading, Icon, Text, VStack } from 'native-base'
+import { MaterialIcons } from '@expo/vector-icons'
 import { UserPhoto } from './UserPhoto'
+import { TouchableOpacity } from 'react-native'
 
 export function HomeHeader() {
   return (
@@ -18,6 +20,9 @@ export function HomeHeader() {
           Ivan Seibel
         </Heading>
       </VStack>
+      <TouchableOpacity style={{ marginLeft: 'auto' }}>
+        <Icon as={MaterialIcons} name="logout" size={7} color={'gray.200'} />
+      </TouchableOpacity>
     </HStack>
   )
 }
