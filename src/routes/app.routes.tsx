@@ -10,7 +10,8 @@ import { Profile } from '@screens/Profile'
 import HomeSvg from '@assets/home.svg'
 import HistorySvg from '@assets/history.svg'
 import ProfileSvg from '@assets/profile.svg'
-import { useTheme } from 'native-base'
+import { Center, useTheme } from 'native-base'
+import { Platform } from 'react-native'
 
 type AppRoutes = {
   home: undefined
@@ -26,7 +27,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>()
 export function AppRoutes() {
   const { sizes, colors } = useTheme()
 
-  const iconSize = sizes[6]
+  const iconSize = sizes[7]
 
   return (
     <Navigator
@@ -34,6 +35,12 @@ export function AppRoutes() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.green[500],
+        tabBarStyle: {
+          backgroundColor: colors.gray[600],
+          borderTopWidth: 0,
+          paddingTop: sizes[10],
+          paddingBottom: Platform.OS === 'ios' ? sizes[16] : sizes[10],
+        },
       }}
     >
       <Screen
@@ -41,7 +48,9 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <HomeSvg fill={color} width={iconSize} height={iconSize} />
+            <Center h={sizes[4]} w={sizes[4]}>
+              <HomeSvg fill={color} width={iconSize} height={iconSize} />
+            </Center>
           ),
         }}
       />
@@ -50,7 +59,9 @@ export function AppRoutes() {
         component={History}
         options={{
           tabBarIcon: ({ color }) => (
-            <HistorySvg fill={color} width={iconSize} height={iconSize} />
+            <Center h={sizes[4]} w={sizes[4]}>
+              <HistorySvg fill={color} width={iconSize} height={iconSize} />
+            </Center>
           ),
         }}
       />
@@ -59,11 +70,17 @@ export function AppRoutes() {
         component={Profile}
         options={{
           tabBarIcon: ({ color }) => (
-            <ProfileSvg fill={color} width={iconSize} height={iconSize} />
+            <Center h={sizes[4]} w={sizes[4]}>
+              <ProfileSvg fill={color} width={iconSize} height={iconSize} />
+            </Center>
           ),
         }}
       />
-      <Screen name="exercise" component={Exercise} />
+      <Screen
+        name="exercise"
+        component={Exercise}
+        options={{ tabBarButton: () => null }}
+      />
     </Navigator>
   )
 }
