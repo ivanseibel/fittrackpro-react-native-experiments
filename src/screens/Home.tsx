@@ -1,6 +1,6 @@
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
-import { HStack, VStack } from 'native-base'
+import { FlatList, VStack } from 'native-base'
 import { useState } from 'react'
 
 type GroupOfExercises =
@@ -26,16 +26,22 @@ export function Home() {
   return (
     <VStack flex={1}>
       <HomeHeader />
-      <HStack>
-        {groups.map((group) => (
+      <FlatList
+        data={groups}
+        keyExtractor={(group) => group}
+        horizontal
+        backgroundColor={'green.100'}
+        my={10}
+        // maxH={10}
+        _contentContainerStyle={{ px: 8 }}
+        renderItem={({ item }) => (
           <Group
-            key={group}
-            name={group}
-            active={selectedGroup === group}
-            onPress={() => setSelectedGroup(group)}
+            name={item}
+            active={selectedGroup === item}
+            onPress={() => setSelectedGroup(item)}
           />
-        ))}
-      </HStack>
+        )}
+      />
     </VStack>
   )
 }
