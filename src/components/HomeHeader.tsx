@@ -12,7 +12,7 @@ export function HomeHeader() {
         alt={"User's photo"}
         mr={4}
       />
-      <VStack>
+      <VStack flex={1}>
         <Text color={'gray.100'} fontSize={'md'}>
           Hello,
         </Text>
@@ -20,7 +20,7 @@ export function HomeHeader() {
           Ivan Seibel
         </Heading>
       </VStack>
-      <TouchableOpacity style={{ marginLeft: 'auto' }}>
+      <TouchableOpacity>
         <Icon as={MaterialIcons} name="logout" size={7} color={'gray.200'} />
       </TouchableOpacity>
     </HStack>
