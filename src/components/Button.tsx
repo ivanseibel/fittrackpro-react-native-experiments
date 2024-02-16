@@ -15,6 +15,7 @@ export function Button({ variant = 'solid', children, ...rest }: ButtonProps) {
         fontFamily: 'heading',
         color: variant === 'outline' ? 'green.700' : 'white',
         fontSize: 'md',
+        lineHeight: 'md',
       }}
       _pressed={{
         bg: variant === 'outline' ? 'green.700' : 'green.500',
@@ -22,6 +23,7 @@ export function Button({ variant = 'solid', children, ...rest }: ButtonProps) {
           fontFamily: 'heading',
           color: 'white',
           fontSize: 'md',
+          lineHeight: 'md',
         },
       }}
       variant={variant}
