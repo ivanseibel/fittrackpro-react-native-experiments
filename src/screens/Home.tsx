@@ -4,6 +4,8 @@ import { HomeHeader } from '@components/HomeHeader'
 import { FlatList, HStack, Heading, Text, VStack } from 'native-base'
 import { useState } from 'react'
 import { Exercise } from './Exercise'
+import { useNavigation } from '@react-navigation/native'
+import { AppNavigatorRoutesProps } from '@routes/app.routes'
 
 type GroupOfExercises =
   | 'back'
@@ -91,6 +93,12 @@ const exercises: Exercise[] = [
 export function Home() {
   const [selectedGroup, setSelectedGroup] = useState<GroupOfExercises>('biceps')
 
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  function handleOpenExercise() {
+    navigation.navigate('exercise')
+  }
+
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -140,6 +148,7 @@ export function Home() {
               description={item.description}
               name={item.name}
               image={item.image}
+              onPress={handleOpenExercise}
             />
           )}
         />
