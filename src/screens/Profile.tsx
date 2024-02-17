@@ -17,6 +17,7 @@ export function Profile() {
           flex={1}
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
+          paddingBottom={36}
         >
           <Center mt={6} px={10} flex={1}>
             <UserPhoto
