@@ -91,7 +91,7 @@ const exercises: Exercise[] = [
 ]
 
 export function Home() {
-  const [selectedGroup, setSelectedGroup] = useState<GroupOfExercises>('biceps')
+  const [selectedGroup, setSelectedGroup] = useState<GroupOfExercises>('back')
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
