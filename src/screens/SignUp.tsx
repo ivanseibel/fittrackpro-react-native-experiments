@@ -1,13 +1,45 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
-
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from 'native-base'
 import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
 import { useNavigation } from '@react-navigation/native'
+import { useForm, Controller } from 'react-hook-form'
+
+type Inputs = {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+}
 
 export function SignUp() {
+  const toast = useToast()
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  const onSubmit = (data: Inputs) => console.log('hey', data)
+
   const navigation = useNavigation()
 
   function handleNavigateToSignIn() {
@@ -29,7 +61,7 @@ export function SignUp() {
             resizeMode="contain"
             position="absolute"
           />
-          <Center my={24}>
+          <Center mt={24} mb={16}>
             <LogoSvg />
             <Text fontSize="sm" color="gray.100" lineHeight={'sm'}>
               Strengthen your mind and body
@@ -47,17 +79,80 @@ export function SignUp() {
             </Heading>
           </Center>
           <VStack space={4}>
-            <Input placeholder="Name" inputMode="text" autoCapitalize="words" />
-            <Input
-              placeholder="Email"
-              inputMode="email"
-              autoCapitalize="none"
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              name="name"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Name"
+                  inputMode="text"
+                  autoCapitalize="words"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
             />
-            <Input placeholder="Password" secureTextEntry />
-            <Input placeholder="Confirm password" secureTextEntry />
+
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              name="email"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              name="password"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Password"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              name="confirmPassword"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Confirm password"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                  returnKeyType="send"
+                />
+              )}
+            />
           </VStack>
           <Center mt={8}>
-            <Button w={'full'} h={14}>
+            <Button w={'full'} h={14} onPress={handleSubmit(onSubmit)}>
               Create account
             </Button>
           </Center>
