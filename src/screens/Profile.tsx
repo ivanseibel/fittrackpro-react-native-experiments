@@ -46,7 +46,7 @@ export function Profile() {
         size: true,
       })) as PhotoFileInfoProps
 
-      if (fileInfo.size > 1 * 1024 * 1024) {
+      if (fileInfo.size > 5 * 1024 * 1024) {
         toast.show({
           title:
             'The selected image is too large. Please select a smaller one.',
