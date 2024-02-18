@@ -3,8 +3,15 @@ import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
-import { Center, Heading, ScrollView, Text, VStack } from 'native-base'
-import { Alert, TouchableOpacity } from 'react-native'
+import {
+  Center,
+  Heading,
+  ScrollView,
+  Text,
+  VStack,
+  useToast,
+} from 'native-base'
+import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { useState } from 'react'
@@ -17,6 +24,8 @@ type PhotoFileInfoProps = FileSystem.FileInfo & {
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null)
+
+  const toast = useToast()
 
   async function handleUserPhotoChange() {
     try {
@@ -37,16 +46,23 @@ export function Profile() {
         size: true,
       })) as PhotoFileInfoProps
 
-      if (fileInfo.size > 5 * 1024 * 1024) {
-        Alert.alert(
-          'The selected image is too large. Please select a smaller one.',
-        )
+      if (fileInfo.size > 1 * 1024 * 1024) {
+        toast.show({
+          title:
+            'The selected image is too large. Please select a smaller one.',
+          placement: 'top',
+          bgColor: 'red.500',
+        })
         return
       }
 
       setUserPhoto(result.assets[0].uri)
     } catch (err) {
-      alert('Failed to load image')
+      toast.show({
+        title: 'An error occurred while trying to change the photo.',
+        placement: 'top',
+        bgColor: 'red.500',
+      })
     }
   }
 
