@@ -1,11 +1,15 @@
 import { Center, Image, IImageProps, Skeleton } from 'native-base'
 import { useState } from 'react'
+import { ImageSourcePropType } from 'react-native'
+
+import userPhotoDefault from '@assets/userPhotoDefault.png'
 
 type UserPhotoProps = IImageProps & {
   size: number
+  source: ImageSourcePropType | undefined
 }
 
-export function UserPhoto({ size, alt, ...rest }: UserPhotoProps) {
+export function UserPhoto({ size, alt, source, ...rest }: UserPhotoProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   return (
@@ -28,6 +32,7 @@ export function UserPhoto({ size, alt, ...rest }: UserPhotoProps) {
         onLoad={() => setImageLoaded(true)}
         onLoadStart={() => setImageLoaded(false)}
         opacity={imageLoaded ? 1 : 0} // Ensure the image becomes visible only when loaded
+        source={source || userPhotoDefault}
         {...rest}
       />
     </Center>
