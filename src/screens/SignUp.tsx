@@ -1,12 +1,4 @@
-import {
-  VStack,
-  Image,
-  Text,
-  Center,
-  Heading,
-  ScrollView,
-  useToast,
-} from 'native-base'
+import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
 import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
@@ -23,8 +15,6 @@ type Inputs = {
 }
 
 export function SignUp() {
-  const toast = useToast()
-
   const {
     control,
     handleSubmit,
@@ -82,7 +72,7 @@ export function SignUp() {
             <Controller
               control={control}
               rules={{
-                required: true,
+                required: 'Name is required',
               }}
               name="name"
               render={({ field: { onChange, onBlur, value } }) => (
@@ -93,6 +83,7 @@ export function SignUp() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.name?.message}
                 />
               )}
             />
@@ -100,7 +91,11 @@ export function SignUp() {
             <Controller
               control={control}
               rules={{
-                required: true,
+                required: 'Email is required',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Please enter a valid email',
+                },
               }}
               name="email"
               render={({ field: { onChange, onBlur, value } }) => (
@@ -111,6 +106,7 @@ export function SignUp() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.email?.message}
                 />
               )}
             />
@@ -118,7 +114,7 @@ export function SignUp() {
             <Controller
               control={control}
               rules={{
-                required: true,
+                required: 'Password is required',
               }}
               name="password"
               render={({ field: { onChange, onBlur, value } }) => (
@@ -128,15 +124,13 @@ export function SignUp() {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
+                  errorMessage={errors.password?.message}
                 />
               )}
             />
 
             <Controller
               control={control}
-              rules={{
-                required: true,
-              }}
               name="confirmPassword"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
