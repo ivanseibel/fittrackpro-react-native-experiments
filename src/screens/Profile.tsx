@@ -8,23 +8,25 @@ import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 
-import userPhotoDefault from '@assets/userPhotoDefault.png'
-
 const PHOTO_SIZE = 33
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null)
 
   async function handleUserPhotoChange() {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    })
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      })
 
-    if (!result.canceled) {
-      setUserPhoto(result.assets[0].uri)
+      if (!result.canceled) {
+        setUserPhoto(result.assets[0].uri)
+      }
+    } catch (err) {
+      alert('Failed to load image')
     }
   }
 
@@ -42,7 +44,7 @@ export function Profile() {
             <UserPhoto
               size={PHOTO_SIZE}
               alt="Ivan Seibel"
-              source={!userPhoto ? userPhotoDefault : { uri: userPhoto }}
+              source={!userPhoto ? undefined : { uri: userPhoto }}
             />
             <TouchableOpacity
               onPress={handleUserPhotoChange}
