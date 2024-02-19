@@ -15,6 +15,9 @@ import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const PHOTO_SIZE = 33
 
@@ -22,15 +25,46 @@ type PhotoFileInfoProps = FileSystem.FileInfo & {
   size: number
 }
 
+type Inputs = {
+  name: string
+  password: string
+  confirmPassword: string
+}
+
+const signUpSchema = yup.object().shape({
+  name: yup.string().required('Name is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(6, 'Password is too short'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm Password is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+})
+
 export function Profile() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      name: '',
+      password: '',
+      confirmPassword: '',
+    },
+    resolver: yupResolver(signUpSchema),
+  })
+
+  const onSubmit = (data: Inputs) => console.log('hey', data)
+
   const [userPhoto, setUserPhoto] = useState<string | null>(null)
 
   const toast = useToast()
 
   async function handleUserPhotoChange() {
     try {
-      // File size is limited to 5MB
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -98,8 +132,26 @@ export function Profile() {
             </TouchableOpacity>
 
             <VStack space={4} w={'full'} mb={4}>
-              <Input placeholder="Name" bg={'gray.600'} />
-              <Input placeholder="E-mail" bg={'gray.600'} isDisabled />
+              <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    placeholder="Name"
+                    bg={'gray.600'}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    errorMessage={errors.name?.message}
+                  />
+                )}
+              />
+              <Input
+                placeholder="E-mail"
+                bg={'gray.600'}
+                isDisabled
+                isReadOnly
+              />
             </VStack>
             <VStack space={4} w={'full'} flex={1} justifyContent={'flex-end'}>
               <Heading
@@ -110,11 +162,35 @@ export function Profile() {
               >
                 Change password
               </Heading>
-              <Input placeholder="Password" bg={'gray.600'} secureTextEntry />
-              <Input
-                placeholder="Confirm password"
-                bg={'gray.600'}
-                secureTextEntry
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    placeholder="Password"
+                    bg={'gray.600'}
+                    secureTextEntry
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    errorMessage={errors.password?.message}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    placeholder="Confirm password"
+                    bg={'gray.600'}
+                    secureTextEntry
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    errorMessage={errors.confirmPassword?.message}
+                  />
+                )}
               />
               <Button
                 mt={4}
@@ -122,7 +198,7 @@ export function Profile() {
                 w={'full'}
                 h={14}
                 variant={'solid'}
-                onPress={() => {}}
+                onPress={handleSubmit(onSubmit)}
               >
                 Save
               </Button>
