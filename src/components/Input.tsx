@@ -9,7 +9,9 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: InputProps) {
 
   return (
     <FormControl isInvalid={inputIsInvalid}>
-      <FormControl.ErrorMessage m={0}>{errorMessage}</FormControl.ErrorMessage>
+      <FormControl.ErrorMessage m={0} color={'red.600'}>
+        {errorMessage}
+      </FormControl.ErrorMessage>
       <NativeBaseInput
         bg="gray.650"
         h={14}
