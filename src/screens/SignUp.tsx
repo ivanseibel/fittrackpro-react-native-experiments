@@ -6,6 +6,8 @@ import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
 import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type Inputs = {
   name: string
@@ -13,6 +15,19 @@ type Inputs = {
   password: string
   confirmPassword: string
 }
+
+const signUpSchema = yup.object().shape({
+  name: yup.string().required('Name is required'),
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm Password is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+})
 
 export function SignUp() {
   const {
@@ -26,6 +41,7 @@ export function SignUp() {
       password: '',
       confirmPassword: '',
     },
+    resolver: yupResolver(signUpSchema),
   })
 
   const onSubmit = (data: Inputs) => console.log('hey', data)
@@ -71,9 +87,6 @@ export function SignUp() {
           <VStack space={4}>
             <Controller
               control={control}
-              rules={{
-                required: 'Name is required',
-              }}
               name="name"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
@@ -90,13 +103,6 @@ export function SignUp() {
 
             <Controller
               control={control}
-              rules={{
-                required: 'Email is required',
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: 'Please enter a valid email',
-                },
-              }}
               name="email"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
@@ -113,9 +119,6 @@ export function SignUp() {
 
             <Controller
               control={control}
-              rules={{
-                required: 'Password is required',
-              }}
               name="password"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
@@ -141,6 +144,7 @@ export function SignUp() {
                   value={value}
                   onSubmitEditing={handleSubmit(onSubmit)}
                   returnKeyType="send"
+                  errorMessage={errors.confirmPassword?.message}
                 />
               )}
             />
