@@ -30,7 +30,7 @@ export function SignIn() {
             resizeMode="contain"
             position="absolute"
           />
-          <Center my={24}>
+          <Center mt={24} mb={16}>
             <LogoSvg />
             <Text fontSize="sm" color="gray.100" lineHeight={'sm'}>
               Strengthen your mind and body
