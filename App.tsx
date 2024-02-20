@@ -8,7 +8,7 @@ import {
 import { Loading } from '@components/Loading'
 import { theme } from 'src/theme'
 import { Routes } from '@routes/index'
-import { AuthContext } from '@contexts/AuthContext'
+import { AuthContextProvider } from '@contexts/AuthContext'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,19 +23,9 @@ export default function App() {
         backgroundColor={'transparent'}
         translucent={true}
       />
-      <AuthContext.Provider
-        value={{
-          user: {
-            id: '1',
-            name: 'User',
-            email: 'user@email.com',
-            avatar: 'user.png',
-          },
-          isAuthenticated: false,
-        }}
-      >
+      <AuthContextProvider>
         {!fontsLoaded ? <Loading /> : <Routes />}
-      </AuthContext.Provider>
+      </AuthContextProvider>
     </NativeBaseProvider>
   )
 }
