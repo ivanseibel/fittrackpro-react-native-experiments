@@ -83,7 +83,6 @@ export function Profile() {
 
       if (fileInfo.size > 5 * 1024 * 1024) {
         toast.show({
-          title: 'Error',
           description: 'The image size must be less than 5MB.',
           bgColor: 'red.500',
           ...TOAST_DEFAULT,
@@ -94,7 +93,6 @@ export function Profile() {
       setUserPhoto(result.assets[0].uri)
     } catch (err) {
       toast.show({
-        title: 'Error',
         description: 'An error occurred while changing the photo.',
         bgColor: 'red.500',
         ...TOAST_DEFAULT,
