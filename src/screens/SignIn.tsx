@@ -1,4 +1,12 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from 'native-base'
 
 import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
@@ -9,20 +17,35 @@ import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { useNavigation } from '@react-navigation/native'
 import { useAuth } from '@hooks/useAuth'
 import { useState } from 'react'
+import { AppError } from '@utils/AppError'
+import { TOAST_DEFAULT } from '@utils/constants'
 
 export function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { signIn } = useAuth()
+  const { signIn, isLoading } = useAuth()
+  const toast = useToast()
 
   function handleNavigateToSignUp() {
     navigation.navigate('signUp')
   }
 
-  function handleSignIn() {
-    signIn({ email, password })
+  async function handleSignIn() {
+    try {
+      await signIn({ email, password })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      if (isAppError) {
+        return toast.show({
+          description: isAppError ? error.message : TOAST_DEFAULT.description,
+          bgColor: 'red.500',
+          ...TOAST_DEFAULT,
+        })
+      }
+    }
   }
 
   return (
@@ -74,7 +97,12 @@ export function SignIn() {
             />
           </VStack>
           <Center mt={8}>
-            <Button w={'full'} h={14} onPress={handleSignIn}>
+            <Button
+              w={'full'}
+              h={14}
+              onPress={handleSignIn}
+              isLoading={isLoading}
+            >
               Sign in
             </Button>
           </Center>
