@@ -22,7 +22,6 @@ type SignUpProps = {
 
 type AuthContextDataType = {
   user: UserDTO
-  isAuthenticated: boolean
   isLoading: boolean
   token: string
   refreshToken: string
@@ -44,7 +43,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [token, setToken] = useState<string>('')
   const [refreshToken, setRefreshToken] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   async function handleSignIn({ email, password }: SignInProps) {
     if (email === '' || password === '') {
@@ -68,7 +66,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setUser(data.user)
       setToken(data.token)
       setRefreshToken(data.refresh_token)
-      setIsAuthenticated(true)
 
       await userStorageSave(data.user)
     } finally {
@@ -77,12 +74,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
   async function handleSignOut() {
+    await userStorageRemove()
     setUser({} as UserDTO)
-    setIsAuthenticated(false)
     setToken('')
     setRefreshToken('')
-
-    await userStorageRemove()
   }
 
   async function handleSignUp(data: SignUpProps) {
@@ -94,10 +89,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (response.status !== 201) {
         throw new AppError(response.data.message)
       }
-
-      const user = response.data as UserDTO
-      setUser(user)
-      setIsAuthenticated(true)
     } finally {
       setIsLoading(false)
     }
@@ -111,7 +102,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       if (user) {
         setUser(user)
-        setIsAuthenticated(true)
       }
 
       setIsLoading(false)
@@ -124,7 +114,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated,
         isLoading,
         token,
         refreshToken,
