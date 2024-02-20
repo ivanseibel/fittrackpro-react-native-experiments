@@ -6,10 +6,6 @@ export const TOAST_DEFAULT: IToastProps = {
     fontFamily: 'body',
     fontSize: 'md',
   },
-  _title: {
-    fontFamily: 'heading',
-    fontSize: 'lg',
-  },
 }
 
 export const GENERAL_ERROR_MESSAGE =
