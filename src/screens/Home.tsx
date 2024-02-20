@@ -3,86 +3,18 @@ import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
 import { FlatList, HStack, Heading, Text, VStack, useToast } from 'native-base'
 import { useCallback, useEffect, useState } from 'react'
-import { Exercise } from './Exercise'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { api } from 'src/service/api'
 import { TOAST_DEFAULT } from '@utils/constants'
 import { AppError } from '@utils/AppError'
-
-type Group = string
-
-type Exercise = {
-  id: string
-  name: string
-  series: string
-  repetitions: string
-  group: Group
-}
-
-// const exercises: Exercise[] = [
-//   {
-//     name: 'Front pulldown',
-//     image:
-//       'https://williamcarvalhoamaral.files.wordpress.com/2020/01/dorsal-blog.jpg?w=640',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Bent-Over row',
-//     image:
-//       'https://post.healthline.com/wp-content/uploads/2022/04/female-workout-bent-over-row-1296-728-header.jpg',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Single-Arm Row',
-//     image:
-//       'https://hips.hearstapps.com/hmg-prod/images/form-check-index-1591205064.png?crop=0.888888888888889xw:1xh;center,top&resize=1200:*',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Deadlifts',
-//     image:
-//       'https://www.shape.com/thmb/hHanf-antsddTCTA5LrUq-Oj6TM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/101323-Deadlifts-f3b42d2d25a84c91b98e412aa4ed4d33.jpg',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Deadlifts',
-//     image:
-//       'https://www.shape.com/thmb/hHanf-antsddTCTA5LrUq-Oj6TM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/101323-Deadlifts-f3b42d2d25a84c91b98e412aa4ed4d33.jpg',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Deadlifts',
-//     image:
-//       'https://www.shape.com/thmb/hHanf-antsddTCTA5LrUq-Oj6TM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/101323-Deadlifts-f3b42d2d25a84c91b98e412aa4ed4d33.jpg',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-//   {
-//     name: 'Deadlifts',
-//     image:
-//       'https://www.shape.com/thmb/hHanf-antsddTCTA5LrUq-Oj6TM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/101323-Deadlifts-f3b42d2d25a84c91b98e412aa4ed4d33.jpg',
-//     description:
-//       '3 sets - 12 reps Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi praesentium omnis error vero porro inventore, tempore corrupti dolores odit? Provident eos adipisci, doloribus minima fugit esse voluptatum. Quisquam, quod dolorum?',
-//     group: 'back',
-//   },
-// ]
+import { ExerciseDTO } from '@dtos/ExerciseDTO'
+import { GroupDTO } from '@dtos/GroupDTO'
 
 export function Home() {
-  const [groups, setGroups] = useState<Group[]>([])
-  const [selectedGroup, setSelectedGroup] = useState<Group>('')
-  const [exercises, setExercises] = useState<Exercise[]>([])
+  const [groups, setGroups] = useState<GroupDTO[]>([])
+  const [selectedGroup, setSelectedGroup] = useState<GroupDTO>('')
+  const [exercises, setExercises] = useState<ExerciseDTO[]>([])
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const toast = useToast()
@@ -98,6 +30,7 @@ export function Home() {
 
         if (result.status === 200) {
           setGroups(result.data)
+          setSelectedGroup(result.data[0])
         }
       } catch (error) {
         const isAppError = error instanceof AppError
@@ -125,7 +58,7 @@ export function Home() {
 
           if (result.status === 200) {
             console.log('result.data', result.data)
-            setExercises(result.data as Exercise[])
+            setExercises(result.data as ExerciseDTO[])
           }
         } catch (error) {
           const isAppError = error instanceof AppError
@@ -190,9 +123,7 @@ export function Home() {
             <ExerciseCard
               description={`${item.series} series - ${item.repetitions} reps`}
               name={item.name}
-              image={
-                'https://hips.hearstapps.com/hmg-prod/images/one-young-man-sport-clothes-back-lat-pulldown-royalty-free-image-1636375894.jpg'
-              }
+              image={item.thumb}
               onPress={handleOpenExercise}
             />
           )}
