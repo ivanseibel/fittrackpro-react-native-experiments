@@ -7,12 +7,18 @@ import { DismissKeyboardView } from '@components/DismissKeyboardView'
 import { Button } from '@components/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { useNavigation } from '@react-navigation/native'
+import { useAuth } from '@hooks/useAuth'
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const { signIn } = useAuth()
 
   function handleNavigateToSignUp() {
     navigation.navigate('signUp')
+  }
+
+  function handleSignIn() {
+    signIn()
   }
 
   return (
@@ -56,7 +62,7 @@ export function SignIn() {
             <Input placeholder="Password" secureTextEntry />
           </VStack>
           <Center mt={8}>
-            <Button w={'full'} h={14}>
+            <Button w={'full'} h={14} onPress={handleSignIn}>
               Sign in
             </Button>
           </Center>
