@@ -1,4 +1,12 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from 'native-base'
 import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
@@ -8,6 +16,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { TOAST_DEFAULT } from '@utils/constants'
 
 type Inputs = {
   name: string
@@ -47,7 +56,50 @@ export function SignUp() {
     resolver: yupResolver(signUpSchema),
   })
 
-  const onSubmit = (data: Inputs) => console.log('hey', data)
+  const toast = useToast()
+
+  async function onSubmit(data: Inputs) {
+    console.log(data)
+
+    try {
+      const response = await fetch('http://172.18.0.1:3333/users', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const parsed = await response.json()
+        toast.show({
+          title: 'Error',
+          description: parsed.message,
+          bgColor: 'red.500',
+          ...TOAST_DEFAULT,
+        })
+        return
+      }
+
+      toast.show({
+        title: 'Account created',
+        description: `Welcome, ${data.name}`,
+        bgColor: 'green.500',
+        ...TOAST_DEFAULT,
+      })
+
+      navigation.goBack()
+    } catch (error) {
+      console.error(error)
+      toast.show({
+        title: 'Error',
+        description: 'An error occurred, please try again later',
+        bgColor: 'red.500',
+        ...TOAST_DEFAULT,
+      })
+    }
+  }
 
   const navigation = useNavigation()
 
