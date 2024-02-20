@@ -17,8 +17,8 @@ import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { GENERAL_ERROR_MESSAGE, TOAST_DEFAULT } from '@utils/constants'
-import { api } from 'src/service/api'
 import { AppError } from '@utils/AppError'
+import { useAuth } from '@hooks/useAuth'
 
 type Inputs = {
   name: string
@@ -44,6 +44,8 @@ const signUpSchema = yup.object().shape({
 })
 
 export function SignUp() {
+  const { isLoading, signUp } = useAuth()
+
   const {
     control,
     handleSubmit,
@@ -62,32 +64,17 @@ export function SignUp() {
 
   async function onSubmit(data: Inputs) {
     try {
-      const response = await api.post('/users', data)
-
-      if (response.status !== 201) {
-        toast.show({
-          title: 'Error',
-          description: response.data.message,
-          bgColor: 'red.500',
-          ...TOAST_DEFAULT,
-        })
-        return
-      }
-
+      await signUp(data)
       toast.show({
-        title: 'Account created',
         description: `Welcome, ${data.name}`,
         bgColor: 'green.500',
         ...TOAST_DEFAULT,
       })
-
-      navigation.goBack()
     } catch (error) {
       const isAppError = error instanceof AppError
 
       console.log(error)
       toast.show({
-        title: 'Error',
         description: isAppError ? error.message : GENERAL_ERROR_MESSAGE,
         bgColor: 'red.500',
         ...TOAST_DEFAULT,
@@ -199,7 +186,12 @@ export function SignUp() {
             />
           </VStack>
           <Center mt={8}>
-            <Button w={'full'} h={14} onPress={handleSubmit(onSubmit)}>
+            <Button
+              w={'full'}
+              h={14}
+              onPress={handleSubmit(onSubmit)}
+              isLoading={isLoading}
+            >
               Create account
             </Button>
           </Center>
