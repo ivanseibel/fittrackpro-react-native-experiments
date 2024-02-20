@@ -40,7 +40,7 @@ export const AuthContext = createContext<AuthContextDataType>(
 )
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [token, setToken] = useState<string>('')
   const [refreshToken, setRefreshToken] = useState('')
