@@ -94,6 +94,8 @@ export function SignIn() {
               secureTextEntry
               onChangeText={setPassword}
               value={password}
+              returnKeyType="send"
+              onSubmitEditing={handleSignIn}
             />
           </VStack>
           <Center mt={8}>
