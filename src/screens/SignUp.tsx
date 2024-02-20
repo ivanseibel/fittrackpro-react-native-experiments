@@ -16,7 +16,9 @@ import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { TOAST_DEFAULT } from '@utils/constants'
+import { GENERAL_ERROR_MESSAGE, TOAST_DEFAULT } from '@utils/constants'
+import { api } from 'src/service/api'
+import { AppError } from '@utils/AppError'
 
 type Inputs = {
   name: string
@@ -59,23 +61,13 @@ export function SignUp() {
   const toast = useToast()
 
   async function onSubmit(data: Inputs) {
-    console.log(data)
-
     try {
-      const response = await fetch('http://172.18.0.1:3333/users', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
+      const response = await api.post('/users', data)
 
-      if (!response.ok) {
-        const parsed = await response.json()
+      if (response.status !== 201) {
         toast.show({
           title: 'Error',
-          description: parsed.message,
+          description: response.data.message,
           bgColor: 'red.500',
           ...TOAST_DEFAULT,
         })
@@ -91,10 +83,12 @@ export function SignUp() {
 
       navigation.goBack()
     } catch (error) {
-      console.error(error)
+      const isAppError = error instanceof AppError
+
+      console.log(error)
       toast.show({
         title: 'Error',
-        description: 'An error occurred, please try again later',
+        description: isAppError ? error.message : GENERAL_ERROR_MESSAGE,
         bgColor: 'red.500',
         ...TOAST_DEFAULT,
       })
