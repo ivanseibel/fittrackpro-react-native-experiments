@@ -1,5 +1,6 @@
 import { SignInDTO } from '@dtos/SignInDTO'
 import { UserDTO } from '@dtos/UserDTO'
+import { userStorageSave } from '@storage/userStorage'
 import { AppError } from '@utils/AppError'
 import { createContext, useState } from 'react'
 import { api } from 'src/service/api'
@@ -64,6 +65,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setToken(data.token)
       setRefreshToken(data.refresh_token)
       setIsAuthenticated(true)
+
+      await userStorageSave(data.user)
     } finally {
       setIsLoading(false)
     }
