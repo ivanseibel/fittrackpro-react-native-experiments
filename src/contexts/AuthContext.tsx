@@ -1,10 +1,15 @@
 import { UserDTO } from '@dtos/UserDTO'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState } from 'react'
+
+type SignInProps = {
+  email: string
+  password: string
+}
 
 type AuthContextDataType = {
   user: UserDTO
   isAuthenticated: boolean
-  signIn: () => void
+  signIn: (props: SignInProps) => void
   signOut: () => void
 }
 
@@ -20,7 +25,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  function handleSignIn() {
+  function handleSignIn({ email, password }: SignInProps) {
+    if (email === '' || password === '') {
+      return
+    }
+
     setUser({
       id: '1',
       name: 'User',
@@ -35,16 +44,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     setUser({} as UserDTO)
     setIsAuthenticated(false)
   }
-
-  useEffect(() => {
-    setUser({
-      id: '1',
-      name: 'User',
-      email: 'user@email.com',
-      avatar: 'user.png',
-    })
-    setIsAuthenticated(false)
-  }, [])
 
   return (
     <AuthContext.Provider
