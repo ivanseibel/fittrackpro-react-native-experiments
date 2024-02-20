@@ -1,8 +1,12 @@
 import { SignInDTO } from '@dtos/SignInDTO'
 import { UserDTO } from '@dtos/UserDTO'
-import { userStorageSave } from '@storage/userStorage'
+import {
+  userStorageGet,
+  userStorageRemove,
+  userStorageSave,
+} from '@storage/userStorage'
 import { AppError } from '@utils/AppError'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { api } from 'src/service/api'
 
 type SignInProps = {
@@ -72,9 +76,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
-  function handleSignOut() {
+  async function handleSignOut() {
     setUser({} as UserDTO)
     setIsAuthenticated(false)
+    setToken('')
+    setRefreshToken('')
+
+    await userStorageRemove()
   }
 
   async function handleSignUp(data: SignUpProps) {
@@ -94,6 +102,23 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    async function loadStorageData() {
+      setIsLoading(true)
+
+      const user = await userStorageGet()
+
+      if (user) {
+        setUser(user)
+        setIsAuthenticated(true)
+      }
+
+      setIsLoading(false)
+    }
+
+    loadStorageData()
+  }, [])
 
   return (
     <AuthContext.Provider
