@@ -25,6 +25,12 @@ export default function App() {
       />
       <AuthContext.Provider
         value={{
+          user: {
+            id: '1',
+            name: 'User',
+            email: 'user@email.com',
+            avatar: 'user.png',
+          },
           isAuthenticated: false,
         }}
       >
