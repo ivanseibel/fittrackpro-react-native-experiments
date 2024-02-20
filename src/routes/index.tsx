@@ -2,13 +2,10 @@ import { Box, useTheme } from 'native-base'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
-import { AuthContext } from '@contexts/AuthContext'
-import { useContext } from 'react'
+import { useAuth } from '@hooks/useAuth'
 
 export function Routes() {
-  const contextData = useContext(AuthContext)
-
-  const { isAuthenticated } = contextData as { isAuthenticated: boolean }
+  const { isAuthenticated } = useAuth()
 
   const { colors } = useTheme()
   const theme = {
@@ -18,8 +15,6 @@ export function Routes() {
       background: colors.gray[700],
     },
   }
-
-  // const isAuthenticated = false
 
   return (
     <Box flex={1} bg="gray.700">
