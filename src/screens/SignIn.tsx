@@ -8,8 +8,12 @@ import { Button } from '@components/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { useNavigation } from '@react-navigation/native'
 import { useAuth } from '@hooks/useAuth'
+import { useState } from 'react'
 
 export function SignIn() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const { signIn } = useAuth()
 
@@ -18,7 +22,7 @@ export function SignIn() {
   }
 
   function handleSignIn() {
-    signIn()
+    signIn({ email, password })
   }
 
   return (
@@ -58,8 +62,16 @@ export function SignIn() {
               placeholder="Email"
               inputMode="email"
               autoCapitalize="none"
+              keyboardType="email-address"
+              onChangeText={setEmail}
+              value={email}
             />
-            <Input placeholder="Password" secureTextEntry />
+            <Input
+              placeholder="Password"
+              secureTextEntry
+              onChangeText={setPassword}
+              value={password}
+            />
           </VStack>
           <Center mt={8}>
             <Button w={'full'} h={14} onPress={handleSignIn}>
