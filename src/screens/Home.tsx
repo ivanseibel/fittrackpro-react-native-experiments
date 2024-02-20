@@ -10,11 +10,13 @@ import { TOAST_DEFAULT } from '@utils/constants'
 import { AppError } from '@utils/AppError'
 import { ExerciseDTO } from '@dtos/ExerciseDTO'
 import { GroupDTO } from '@dtos/GroupDTO'
+import { Loading } from '@components/Loading'
 
 export function Home() {
   const [groups, setGroups] = useState<GroupDTO[]>([])
   const [selectedGroup, setSelectedGroup] = useState<GroupDTO>('')
   const [exercises, setExercises] = useState<ExerciseDTO[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const toast = useToast()
@@ -54,6 +56,8 @@ export function Home() {
     useCallback(() => {
       async function fetchExercisesByGroup() {
         try {
+          setIsLoading(true)
+
           const result = await api.get(`/exercises/bygroup/${selectedGroup}`)
 
           if (result.status === 200) {
@@ -72,6 +76,8 @@ export function Home() {
               ...TOAST_DEFAULT,
             })
           }
+        } finally {
+          setIsLoading(false)
         }
       }
 
@@ -100,35 +106,39 @@ export function Home() {
         )}
       />
 
-      <VStack flex={1} px={8}>
-        <HStack justifyContent={'space-between'} mb={5}>
-          <Heading
-            color={'gray.200'}
-            fontSize={'md'}
-            lineHeight={'md'}
-            fontFamily={'heading'}
-          >
-            Exercises
-          </Heading>
-          <Text color={'gray.200'} fontSize={'sm'}>
-            {exercises.length}
-          </Text>
-        </HStack>
-        <FlatList
-          data={exercises}
-          keyExtractor={(exercise, index) => `${exercise.name}-${index}`}
-          showsVerticalScrollIndicator={false}
-          _contentContainerStyle={{ pb: 8 }}
-          renderItem={({ item }) => (
-            <ExerciseCard
-              description={`${item.series} series - ${item.repetitions} reps`}
-              name={item.name}
-              image={item.thumb}
-              onPress={handleOpenExercise}
-            />
-          )}
-        />
-      </VStack>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <VStack flex={1} px={8}>
+          <HStack justifyContent={'space-between'} mb={5}>
+            <Heading
+              color={'gray.200'}
+              fontSize={'md'}
+              lineHeight={'md'}
+              fontFamily={'heading'}
+            >
+              Exercises
+            </Heading>
+            <Text color={'gray.200'} fontSize={'sm'}>
+              {exercises.length}
+            </Text>
+          </HStack>
+          <FlatList
+            data={exercises}
+            keyExtractor={(exercise, index) => `${exercise.name}-${index}`}
+            showsVerticalScrollIndicator={false}
+            _contentContainerStyle={{ pb: 8 }}
+            renderItem={({ item }) => (
+              <ExerciseCard
+                description={`${item.series} series - ${item.repetitions} reps`}
+                name={item.name}
+                image={item.thumb}
+                onPress={handleOpenExercise}
+              />
+            )}
+          />
+        </VStack>
+      )}
     </VStack>
   )
 }
