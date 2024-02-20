@@ -1,34 +1,22 @@
 import { ExerciseCard } from '@components/ExerciseCard'
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
-import { FlatList, HStack, Heading, Text, VStack } from 'native-base'
-import { useState } from 'react'
+import { FlatList, HStack, Heading, Text, VStack, useToast } from 'native-base'
+import { useEffect, useState } from 'react'
 import { Exercise } from './Exercise'
 import { useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
+import { api } from 'src/service/api'
+import { TOAST_DEFAULT } from '@utils/constants'
+import { AppError } from '@utils/AppError'
 
-type GroupOfExercises =
-  | 'back'
-  | 'biceps'
-  | 'chest'
-  | 'legs'
-  | 'shoulders'
-  | 'triceps'
-
-const groups: GroupOfExercises[] = [
-  'back',
-  'biceps',
-  'chest',
-  'legs',
-  'shoulders',
-  'triceps',
-]
+type Group = string
 
 type Exercise = {
   name: string
   image: string
   description: string
-  group: GroupOfExercises
+  group: Group
 }
 
 const exercises: Exercise[] = [
@@ -91,13 +79,39 @@ const exercises: Exercise[] = [
 ]
 
 export function Home() {
-  const [selectedGroup, setSelectedGroup] = useState<GroupOfExercises>('back')
+  const [groups, setGroups] = useState<Group[]>([])
+  const [selectedGroup, setSelectedGroup] = useState<Group>('back')
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const toast = useToast()
 
   function handleOpenExercise() {
     navigation.navigate('exercise')
   }
+
+  useEffect(() => {
+    async function fetchGroups() {
+      try {
+        const result = await api.get('/groups')
+
+        if (result.status === 200) {
+          setGroups(result.data)
+        }
+      } catch (error) {
+        const isAppError = error instanceof AppError
+
+        if (isAppError) {
+          return toast.show({
+            description: isAppError ? error.message : TOAST_DEFAULT.description,
+            bgColor: 'red.500',
+            ...TOAST_DEFAULT,
+          })
+        }
+      }
+    }
+    fetchGroups()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <VStack flex={1}>
