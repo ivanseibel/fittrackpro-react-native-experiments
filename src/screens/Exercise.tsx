@@ -87,7 +87,7 @@ export function Exercise() {
         {isLoading ? (
           <Loading />
         ) : (
-          <HStack justifyContent={'space-between'} mt={4} mb={8} space={2}>
+          <HStack justifyContent={'space-between'} mt={3} mb={5} space={2}>
             <Heading
               color={'gray.100'}
               fontSize={'lg'}
