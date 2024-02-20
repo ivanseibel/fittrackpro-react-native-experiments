@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native'
 import { useAuth } from '@hooks/useAuth'
 
 export function HomeHeader() {
-  const { signOut } = useAuth()
+  const { signOut, user } = useAuth()
 
   return (
     <HStack bg={'gray.600'} pt={16} pb={5} px={8} alignItems={'center'}>
@@ -22,7 +22,7 @@ export function HomeHeader() {
           lineHeight={'md'}
           fontFamily={'heading'}
         >
-          Ivan Seibel
+          {user.name}
         </Heading>
       </VStack>
       <TouchableOpacity onPress={signOut}>
