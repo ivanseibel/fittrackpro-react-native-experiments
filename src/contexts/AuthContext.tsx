@@ -1,5 +1,5 @@
 import { UserDTO } from '@dtos/UserDTO'
-import { createContext } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 type AuthContextDataType = {
   user: UserDTO
@@ -18,16 +18,24 @@ const INITIAL_STATE: AuthContextDataType = {
 export const AuthContext = createContext<AuthContextDataType>(INITIAL_STATE)
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
+  const [user, setUser] = useState<UserDTO>({} as UserDTO)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    setUser({
+      id: '1',
+      name: 'User',
+      email: 'user@email.com',
+      avatar: 'user.png',
+    })
+    setIsAuthenticated(false)
+  }, [])
+
   return (
     <AuthContext.Provider
       value={{
-        user: {
-          id: '1',
-          name: 'User',
-          email: 'user@email.com',
-          avatar: 'user.png',
-        },
-        isAuthenticated: false,
+        user,
+        isAuthenticated,
       }}
     >
       {children}
