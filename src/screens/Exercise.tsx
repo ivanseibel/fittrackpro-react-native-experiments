@@ -33,6 +33,7 @@ type RouteParams = {
 
 export function Exercise() {
   const [isLoading, setIsLoading] = useState(true)
+  const [isMarkingAsCompleted, setIsMarkingAsCompleted] = useState(false)
   const [exercise, setExercise] = useState<ExerciseDTO>()
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
@@ -43,6 +44,44 @@ export function Exercise() {
 
   function handleGoBack() {
     navigation.goBack()
+  }
+
+  function handleNavigateToHistory() {
+    navigation.navigate('history')
+  }
+
+  async function handleMarkAsCompleted() {
+    try {
+      setIsMarkingAsCompleted(true)
+
+      const response = await api.post(`/history/`, {
+        exercise_id: exerciseId,
+      })
+
+      if (response.status === 201) {
+        toast.show({
+          description: 'Exercise marked as completed!',
+          bgColor: 'green.700',
+          ...TOAST_DEFAULT,
+        })
+      }
+
+      handleNavigateToHistory()
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      if (isAppError) {
+        return toast.show({
+          description: isAppError
+            ? error.message
+            : 'An error occurred while marking the exercise as completed. \nPlease try again later.',
+          bgColor: 'red.500',
+          ...TOAST_DEFAULT,
+        })
+      }
+    } finally {
+      setIsMarkingAsCompleted(false)
+    }
   }
 
   useEffect(() => {
@@ -157,7 +196,12 @@ export function Exercise() {
                 </HStack>
               </HStack>
 
-              <Button w={'full'} h={14}>
+              <Button
+                w={'full'}
+                h={14}
+                onPress={handleMarkAsCompleted}
+                isLoading={isMarkingAsCompleted}
+              >
                 Mark as completed
               </Button>
             </VStack>
