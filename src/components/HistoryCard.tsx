@@ -3,10 +3,10 @@ import { HStack, Heading, Text, VStack } from 'native-base'
 type HistoryCardProps = {
   group: string
   name: string
-  time: string
+  hour: string
 }
 
-export function HistoryCard({ group, name, time }: HistoryCardProps) {
+export function HistoryCard({ group, name, hour }: HistoryCardProps) {
   return (
     <HStack
       px={5}
@@ -37,7 +37,7 @@ export function HistoryCard({ group, name, time }: HistoryCardProps) {
         </Text>
       </VStack>
       <Text color="gray.300" fontSize={'md'} lineHeight={'md'}>
-        {time}
+        {hour}
       </Text>
     </HStack>
   )
