@@ -67,7 +67,7 @@ export function SignUp() {
       await signUp(data)
       toast.show({
         description: `Welcome, ${data.name}!`,
-        bgColor: 'green.500',
+        bgColor: 'green.700',
         ...TOAST_DEFAULT,
       })
     } catch (error) {
