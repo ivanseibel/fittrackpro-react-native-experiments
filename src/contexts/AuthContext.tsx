@@ -24,9 +24,10 @@ type SignUpProps = {
 type AuthContextDataType = {
   user: UserDTO
   isLoading: boolean
-  signIn: (props: SignInProps) => void
-  signOut: () => void
-  signUp: (props: SignUpProps) => void
+  signIn: (props: SignInProps) => Promise<void>
+  signOut: () => Promise<void>
+  signUp: (props: SignUpProps) => Promise<void>
+  updateUserProfile: (data: UserDTO) => Promise<void>
 }
 
 type AuthContextProviderProps = {
@@ -103,6 +104,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  async function handleUpdateUserProfile(data: UserDTO) {
+    setUser(data)
+    await userStorageSave(data)
+  }
+
   useEffect(() => {
     async function loadStorageData() {
       setIsLoading(true)
@@ -132,6 +138,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         signIn: handleSignIn,
         signOut: handleSignOut,
         signUp: handleSignUp,
+        updateUserProfile: handleUpdateUserProfile,
       }}
     >
       {children}
