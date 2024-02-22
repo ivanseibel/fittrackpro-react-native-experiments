@@ -10,11 +10,11 @@ The application provides clear visuals of exercises, sets, and repetitions, and 
 
 Here are some glimpses of the FitTrackPro in action:
 
-| Home | Exercise | History |
+| Sign In | Sign Up | Home |
 |------|----------|---------|
 | ![Signin](screenshots/iPhone_15_Pro_Max-Signin.png) | ![Signup](screenshots/iPhone_15_Pro_Max-Signup.png) | ![Home](screenshots/iPhone_15_Pro_Max-Home.png) |
 
-| Profile | Another Screen | And Another |
+| Exercise | History | Profile |
 |---------|----------------|-------------|
 | ![Exercise](screenshots/iPhone_15_Pro_Max-Exercise.png) | ![History](screenshots/iPhone_15_Pro_Max-History.png) | ![Profile](screenshots/iPhone_15_Pro_Max-Profile.png) |
 
