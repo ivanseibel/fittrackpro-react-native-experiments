@@ -56,33 +56,38 @@ api.registerInterceptTokenManager = (signOut) => {
 
           isRefreshing = true
 
-          return new Promise(async (resolve, reject) => {
+          return new Promise((resolve, reject) => {
             try {
-              const { data } = await api.post('sessions/refresh-token', {
-                refresh_token: tokenObject.refreshToken,
-              })
+              api
+                .post('sessions/refresh-token', {
+                  refresh_token: tokenObject.refreshToken,
+                })
+                .then(async (response) => {
+                  const data = response.data
 
-              await tokenStorageSave({
-                token: data.token,
-                refreshToken: data.refresh_token,
-              })
+                  await tokenStorageSave({
+                    token: data.token,
+                    refreshToken: data.refresh_token,
+                  })
 
-              if (originalRequestConfig.data) {
-                originalRequestConfig.data = JSON.parse(
-                  originalRequestConfig.data,
-                )
-              }
+                  if (originalRequestConfig.data) {
+                    originalRequestConfig.data = JSON.parse(
+                      originalRequestConfig.data,
+                    )
+                  }
 
-              originalRequestConfig.headers.Authorization = `Bearer ${data.token}`
-              api.defaults.headers.common.Authorization = `Bearer ${data.token}`
+                  originalRequestConfig.headers.Authorization = `Bearer ${data.token}`
+                  api.defaults.headers.common.Authorization = `Bearer ${data.token}`
 
-              failedQueue.forEach((request) => {
-                request.onSuccess(data.token)
-              })
+                  failedQueue.forEach((request) => {
+                    request.onSuccess(data.token)
+                  })
 
-              console.log('Retrying requests...')
+                  console.log('Retrying requests...')
 
-              resolve(api(originalRequestConfig))
+                  resolve(api(originalRequestConfig))
+                })
+
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
               failedQueue.forEach((request) => {
