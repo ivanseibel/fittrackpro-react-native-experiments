@@ -7,7 +7,7 @@ import {
   userStorageSave,
 } from '@storage/userStorage'
 import { AppError } from '@utils/AppError'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { api } from 'src/service/api'
 
 type SignInProps = {
@@ -23,6 +23,7 @@ type SignUpProps = {
 
 type AuthContextDataType = {
   user: UserDTO
+  avatarUri: string
   isLoading: boolean
   signIn: (props: SignInProps) => Promise<void>
   signOut: () => Promise<void>
@@ -109,6 +110,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     await userStorageSave(data)
   }
 
+  const avatarUri = useMemo(() => {
+    const baseUri = api.defaults.baseURL
+    const avatarFileName = user.avatar
+
+    return `${baseUri}/avatar/${avatarFileName}`
+  }, [user.avatar])
+
   useEffect(() => {
     async function loadStorageData() {
       setIsLoading(true)
@@ -135,6 +143,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       value={{
         user,
         isLoading,
+        avatarUri,
         signIn: handleSignIn,
         signOut: handleSignOut,
         signUp: handleSignUp,
