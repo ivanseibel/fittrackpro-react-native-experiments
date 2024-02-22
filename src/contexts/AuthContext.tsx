@@ -43,15 +43,24 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
 
-  function updateUserStateAndSetToken(data: SignInDTO) {
-    setUser(data.user)
+  function updateUserStateAndSetToken({
+    user,
+    token,
+  }: {
+    user: UserDTO
+    token: string
+  }) {
+    setUser(user)
 
-    api.defaults.headers.common.Authorization = `Bearer ${data.token}`
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
   }
 
   async function updateUserAndTokenStorage(data: SignInDTO) {
     await userStorageSave(data.user)
-    await tokenStorageSave(data.token)
+    await tokenStorageSave({
+      token: data.token,
+      refreshToken: data.refresh_token,
+    })
   }
 
   async function handleSignIn({ email, password }: SignInProps) {
@@ -119,23 +128,30 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   useEffect(() => {
     async function loadStorageData() {
-      setIsLoading(true)
+      try {
+        setIsLoading(true)
 
-      const userFromStorage = await userStorageGet()
-      const tokenFromStorage = await tokenStorageGet()
+        const userFromStorage = await userStorageGet()
+        const tokenFromStorage = await tokenStorageGet()
 
-      if (userFromStorage && tokenFromStorage) {
-        updateUserStateAndSetToken({
-          user: userFromStorage,
-          token: tokenFromStorage,
-          refresh_token: '',
-        })
+        if (userFromStorage && tokenFromStorage) {
+          updateUserStateAndSetToken({
+            user: userFromStorage,
+            token: tokenFromStorage.token,
+          })
+        }
+      } finally {
+        setIsLoading(false)
       }
-
-      setIsLoading(false)
     }
 
     loadStorageData()
+  }, [])
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(handleSignOut)
+
+    return () => subscribe()
   }, [])
 
   return (
