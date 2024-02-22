@@ -1,6 +1,6 @@
-import { tokenStorageGet } from '@storage/tokenStorage'
+import { tokenStorageGet, tokenStorageSave } from '@storage/tokenStorage'
 import { AppError } from '@utils/AppError'
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 
 type SignOut = () => void
 
@@ -8,9 +8,18 @@ type APIInstanceProps = AxiosInstance & {
   registerInterceptTokenManager: (signOut: SignOut) => () => void
 }
 
+type PromiseType = {
+  onSuccess: (token: string) => void
+  onError: (error: AxiosError) => void
+}
+
 const api = axios.create({
   baseURL: 'http://10.10.127.117:3333',
 }) as APIInstanceProps
+
+// Implements a queue for the requests failed due to token expiration
+let failedQueue: PromiseType[] = []
+let isRefreshing = false
 
 api.registerInterceptTokenManager = (signOut) => {
   const interceptTokenManager = api.interceptors.response.use(
@@ -28,6 +37,65 @@ api.registerInterceptTokenManager = (signOut) => {
             signOut()
             return Promise.reject(responseError)
           }
+
+          const originalRequestConfig = responseError.config
+
+          if (isRefreshing) {
+            return new Promise((resolve, reject) => {
+              failedQueue.push({
+                onSuccess: (token) => {
+                  originalRequestConfig.headers.Authorization = `Bearer ${token}`
+                  resolve(api(originalRequestConfig))
+                },
+                onError: (error) => {
+                  reject(error)
+                },
+              })
+            })
+          }
+
+          isRefreshing = true
+
+          return new Promise(async (resolve, reject) => {
+            try {
+              const { data } = await api.post('sessions/refresh-token', {
+                refresh_token: tokenObject.refreshToken,
+              })
+
+              await tokenStorageSave({
+                token: data.token,
+                refreshToken: data.refresh_token,
+              })
+
+              if (originalRequestConfig.data) {
+                originalRequestConfig.data = JSON.parse(
+                  originalRequestConfig.data,
+                )
+              }
+
+              originalRequestConfig.headers.Authorization = `Bearer ${data.token}`
+              api.defaults.headers.common.Authorization = `Bearer ${data.token}`
+
+              failedQueue.forEach((request) => {
+                request.onSuccess(data.token)
+              })
+
+              console.log('Retrying requests...')
+
+              resolve(api(originalRequestConfig))
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+              failedQueue.forEach((request) => {
+                request.onError(error)
+              })
+
+              signOut()
+              reject(error)
+            } finally {
+              isRefreshing = false
+              failedQueue = []
+            }
+          })
         }
 
         signOut()
