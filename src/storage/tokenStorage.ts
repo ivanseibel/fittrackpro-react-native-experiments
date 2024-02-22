@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { AppError } from '@utils/AppError'
 import { TOKEN_STORAGE_PREFIX } from '@utils/constants'
 
 type TokenStorageProps = {
@@ -17,18 +18,25 @@ export async function tokenStorageSave({
 }
 
 export async function tokenStorageGet(): Promise<TokenStorageProps | null> {
-  const result = await AsyncStorage.getItem(TOKEN_STORAGE_PREFIX)
+  try {
+    const result = await AsyncStorage.getItem(TOKEN_STORAGE_PREFIX)
 
-  if (result) {
-    const { token, refreshToken } = JSON.parse(result)
+    console.log('result', result)
 
-    return {
-      token,
-      refreshToken,
+    if (result) {
+      const { token, refreshToken } = JSON.parse(result)
+
+      return {
+        token,
+        refreshToken,
+      }
     }
-  }
 
-  return null
+    return null
+  } catch (error) {
+    console.log('Error getting token from storage', error)
+    throw new AppError('Error getting token from storage')
+  }
 }
 
 export async function tokenStorageRemove() {
