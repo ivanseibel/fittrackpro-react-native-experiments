@@ -14,7 +14,7 @@ import {
 import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -22,6 +22,7 @@ import { TOAST_DEFAULT } from '../utils/constants'
 import { useAuth } from '@hooks/useAuth'
 import { AppError } from '@utils/AppError'
 import { api } from 'src/service/api'
+import { useFocusEffect } from '@react-navigation/native'
 
 const PHOTO_SIZE = 33
 
@@ -78,6 +79,8 @@ export function Profile() {
     try {
       setIsUpdating(true)
 
+      console.log('data', data)
+
       const response = await api.put('/users', {
         name: data.name,
         password: data.password,
@@ -97,6 +100,14 @@ export function Profile() {
       await updateUserProfile({
         ...user,
         name: data.name,
+      })
+
+      control._reset({
+        name: data.name,
+        email: user.email,
+        oldPassword: '',
+        password: '',
+        confirmPassword: '',
       })
     } catch (error) {
       const isAppError = error instanceof AppError
@@ -191,6 +202,12 @@ export function Profile() {
     }
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      control._reset()
+    }, [control]),
+  )
+
   return (
     <DismissKeyboardView>
       <VStack flex={1}>
@@ -267,9 +284,9 @@ export function Profile() {
                   <Input
                     placeholder="Old password"
                     bg={'gray.600'}
-                    secureTextEntry
                     onChangeText={onChange}
                     onBlur={onBlur}
+                    type={'password'}
                     value={value}
                     errorMessage={errors.oldPassword?.message}
                   />
@@ -282,9 +299,9 @@ export function Profile() {
                   <Input
                     placeholder="Password"
                     bg={'gray.600'}
-                    secureTextEntry
                     onChangeText={onChange}
                     onBlur={onBlur}
+                    type={'password'}
                     value={value}
                     errorMessage={errors.password?.message}
                   />
@@ -297,9 +314,9 @@ export function Profile() {
                   <Input
                     placeholder="Confirm password"
                     bg={'gray.600'}
-                    secureTextEntry
                     onChangeText={onChange}
                     onBlur={onBlur}
+                    type={'password'}
                     value={value}
                     returnKeyType="send"
                     onSubmitEditing={handleSubmit(onSubmit)}
