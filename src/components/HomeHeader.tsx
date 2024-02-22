@@ -5,12 +5,16 @@ import { TouchableOpacity } from 'react-native'
 import { useAuth } from '@hooks/useAuth'
 
 export function HomeHeader() {
-  const { signOut, user } = useAuth()
+  const { signOut, user, avatarUri } = useAuth()
 
   return (
     <HStack bg={'gray.600'} pt={16} pb={5} px={8} alignItems={'center'}>
       <Center mr={4}>
-        <UserPhoto size={16} source={undefined} alt={"User's photo"} />
+        <UserPhoto
+          size={16}
+          source={!user.avatar ? undefined : { uri: avatarUri }}
+          alt={"User's photo"}
+        />
       </Center>
       <VStack flex={1}>
         <Text color={'gray.100'} fontSize={'md'} lineHeight={'md'}>
